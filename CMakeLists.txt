@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.2...3.5)
 project(AudioCodecs VERSION 1.0.0 LANGUAGES C CXX)
+set (CMAKE_C_FLAGS "-m32")
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
@@ -21,7 +22,7 @@ else()
     set(CODECS_BUILD_STATIC ON)
 endif()
 
-option(DOWNLOAD_SDL2_DEPENDENCY "Download, compile, and install SDL2's master branch" OFF)
+option(DOWNLOAD_SDL2_DEPENDENCY "Download, compile, and install SDL2's master branch" ON)
 option(USE_LOCAL_SDL2 "Build SDL2 from local copy" OFF)
 if(ANDROID)
     option(USE_USE_NDK_MAKE "Build SDL2 for Android using NDK Make" OFF)
@@ -40,7 +41,7 @@ if(NOT SDL2_REPO_PATH)
             option(BUILD_SDL2_SHARED "Enable shared build of SDL2" ON)
             option(BUILD_SDL2_STATIC "Enable static build of SDL2" ON)
         else()
-            set(BUILD_SDL2_SHARED OFF)
+            set(BUILD_SDL2_SHARED ON)
             set(BUILD_SDL2_STATIC ON)
         endif()
         # Download and configure SDL2 dependency
@@ -51,9 +52,16 @@ endif()
 
 link_directories(${CMAKE_BINARY_DIR}/lib)
 
+# Acquire the YASM assembler
+set (YASM_ASSEMBLER ${CMAKE_SOURCE_DIR}/yasm.exe)
+# Set the ZLIB library paths
+set (ZLIB_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/zlib/zlib)
+set (ZLIB_LIBRARY  ${CMAKE_SOURCE_DIR}/zlib/zlib/win32/dll32/zlibwapi.lib)
+include_directories(${CMAKE_SOURCE_DIR}/zlib/zlib)
+
 if(SDL2_REPO_PATH)
-    link_directories(${SDL2_INSTALL_DIR}/lib)
-    include_directories(${SDL2_INSTALL_DIR}/include)
+    link_directories(${CMAKE_SOURCE_DIR}/SDL2/lib)
+    include_directories(${CMAKE_SOURCE_DIR}/SDL2/include)
     message("SDL2 Repo folder is ${SDL2_REPO_PATH}")
 endif()
 
@@ -253,4 +261,14 @@ if(BUILD_EDMIDI)
     add_subdirectory(libEDMIDI)
     unset(libEDMIDI_STATIC)
     unset(libEDMIDI_SHARED)
+endif()
+
+option(BUILD_LIBGSF "Enable building of libGSF" ON)
+if(BUILD_LIBGSF)
+    set(libgsf_STATIC ${CODECS_BUILD_STATIC} CACHE BOOL "" FORCE)
+    set(libgsf_SHARED ${CODECS_BUILD_SHARED} CACHE BOOL "" FORCE)
+    mark_as_advanced(libgsf_STATIC libgsf_SHARED)
+    add_subdirectory(libgsf)
+    unset(libgsf_STATIC)
+    unset(libgsf_SHARED)
 endif()
