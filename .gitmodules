@@ -1,3 +1,3 @@
-[submodule "libgsf/external/mgba"]
-	path = libgsf/external/mgba
-	url = https://github.com/mgba-emu/mgba
+[submodule "libgsf"]
+	path = libgsf
+	url = https://github.com/chrg127/libgsf.git
