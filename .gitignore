@@ -48,4 +48,4 @@ CMakeSettings.json
 .idea/*
 .DS_Store
 .vscode/
-build-x2/
+build-x2/*
