@@ -1,1 +1,1 @@
-../../src/modplug.h
+#include "../../src/modplug.h"

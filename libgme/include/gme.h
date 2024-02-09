@@ -1,1 +1,1 @@
-../src/gme.h
+#include "../src/gme.h"
