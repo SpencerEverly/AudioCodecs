@@ -1,1 +1,1 @@
-../src/timidity.h
+#include "../src/timidity.h"
