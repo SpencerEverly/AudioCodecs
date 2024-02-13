@@ -81,9 +81,9 @@ std::optional<int> parse_duration(std::string_view s)
         i = parsenum(i-1, 2);
         decimal = true;
     }
-    if (decimal && s[i] == ':')
+    if (s[i] == ':')
         i = parsenum(i-1, 1);
-    if (decimal && s[i] == ':')
+    if (s[i] == ':')
         i = parsenum(i-1, 0);
     if (i > 0)
         return std::nullopt;
@@ -230,14 +230,16 @@ Result<Rom> uncompress_rom(std::span<u8> data, u32 crc, const GsfAllocators &all
 
 TagMap parse_tags(std::string_view tags, const GsfAllocators &allocators)
 {
-    auto allocator = GsfAllocator<char>(allocators);
     auto result = TagMap(GsfAllocator<std::pair<const String, String>>(allocators));
     string::split(tags, '\n', [&] (std::string_view tag) {
         auto equals = tag.find('=');
         auto first = string::trim_view(tag.substr(0, equals));
         auto second = string::trim_view(tag.substr(equals + 1, tag.size()));
         // currently lacking multiline variables
-        result[String(first, allocator)] = String(second, allocator);
+        result.insert({
+            String(first, GsfAllocator<char>(allocators)),
+            String(second, GsfAllocator<char>(allocators))
+        });
     });
     return result;
 }
@@ -369,6 +371,13 @@ public:
 
     static Result<GsfEmu *> create(int sample_rate, int flags, const GsfAllocators &allocators)
     {
+        if (flags & GSF_INFO_ONLY) {
+            auto *emu = allocate<GsfEmu>(allocators, 1, nullptr, sample_rate, flags, allocators);
+            if (!emu)
+                return tl::unexpected(make_err(GSF_ALLOCATION_FAILED));
+            return emu;
+        }
+
         auto core = GBACoreCreate();
         if (!core->init(core))
             return tl::unexpected(make_err(GSF_ALLOCATION_FAILED));
@@ -399,11 +408,14 @@ public:
 
     int load(std::span<u8> data, TagMap &&tags)
     {
-        auto *vmem = VFileMemChunk(data.data(), data.size());
-        core->loadROM(core, vmem);
-        core->reset(core);
+        if (!(flags & GSF_INFO_ONLY)) {
+            auto *vmem = VFileMemChunk(data.data(), data.size());
+            core->loadROM(core, vmem);
+            core->reset(core);
+        }
         this->tags = std::move(tags);
-        auto length = parse_duration(get_tag("length")).value_or(default_len);
+        auto length_tag = get_tag("length").value_or("");
+        auto length = length_tag == "" ? default_len : parse_duration(length_tag).value_or(-1);
         max_samples = millis_to_samples(length, samplerate, num_channels());
         loaded = true;
         return 0;
@@ -411,6 +423,8 @@ public:
 
     void play(short *out, long size)
     {
+        if (flags & GSF_INFO_ONLY)
+            return;
         memset(out, 0, size * sizeof(short));
         for (auto took = 0; took < size && !ended(); ) {
             while (av.read == 0)
@@ -424,6 +438,14 @@ public:
 
     void skip(long n)
     {
+        if (flags & GSF_INFO_ONLY)
+            return;
+        if (n < 0) {
+            core->reset(core);
+            n = num_samples + n;
+            num_samples = 0;
+            av.read = 0;
+        }
         for (auto took = 0; took < n && !ended(); ) {
             while (av.read == 0)
                 core->runLoop(core);
@@ -434,11 +456,11 @@ public:
         }
     }
 
-    std::string_view get_tag(const String &s) const
+    std::optional<std::string_view> get_tag(const String &s) const
     {
         if (auto it = tags.find(s); it != tags.end())
             return it->second;
-        return "";
+        return std::nullopt;
     }
 
     void set_default_length(long length)
@@ -575,16 +597,16 @@ GSF_API GsfError gsf_get_tags_with_allocators(const GsfEmu *emu, GsfTags **out,
     auto *tags      = allocate<GsfTags>(*allocators, 1);
     if (!tags)
         return make_err(GSF_ALLOCATION_FAILED);
-    tags->title     = emu->get_tag("title").data();
-    tags->artist    = emu->get_tag("artist").data();
-    tags->game      = emu->get_tag("game").data();
-    tags->year      = string::to_number(emu->get_tag("year")).value_or(0);
-    tags->genre     = emu->get_tag("genre").data();
-    tags->comment   = emu->get_tag("comment").data();
-    tags->copyright = emu->get_tag("copyright").data();
-    tags->gsfby     = emu->get_tag("gsfby").data();
-    tags->volume    = string::to_number<double>(emu->get_tag("volume")).value_or(0.0);
-    tags->fade      = parse_duration(emu->get_tag("fade")).value_or(0);
+    tags->title     = emu->get_tag("title").value_or("").data();
+    tags->artist    = emu->get_tag("artist").value_or("").data();
+    tags->game      = emu->get_tag("game").value_or("").data();
+    tags->year      = string::to_number(emu->get_tag("year").value_or("")).value_or(0);
+    tags->genre     = emu->get_tag("genre").value_or("").data();
+    tags->comment   = emu->get_tag("comment").value_or("").data();
+    tags->copyright = emu->get_tag("copyright").value_or("").data();
+    tags->gsfby     = emu->get_tag("gsfby").value_or("").data();
+    tags->volume    = string::to_number<double>(emu->get_tag("volume").value_or("")).value_or(0.0);
+    tags->fade      = parse_duration(emu->get_tag("fade").value_or("")).value_or(0);
     *out = tags;
     return GSF_NO_ERROR;
 }

@@ -165,7 +165,7 @@ int main(int argc, char *argv[])
         tags->copyright, tags->gsfby,
         tags->volume, tags->fade
     );
-    printf("length: %d\n", gsf_length(emu));
+    printf("length: %d ms\n", gsf_length(emu));
     gsf_free_tags(tags);
 
     term_init();
@@ -196,6 +196,11 @@ int main(int argc, char *argv[])
             case 'l':
                 SDL_LockAudioDevice(dev);
                 gsf_seek(emu, 1000);
+                SDL_UnlockAudioDevice(dev);
+                break;
+            case 'h':
+                SDL_LockAudioDevice(dev);
+                gsf_seek(emu, -1000);
                 SDL_UnlockAudioDevice(dev);
                 break;
             }

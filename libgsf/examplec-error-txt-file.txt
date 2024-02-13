@@ -1,0 +1,73 @@
+E:\Github\AudioCodecs\libgsf\build>cmake --build . --config Release --target install
+Microsoft (R) Build Engine version 16.11.2+f32259642 for .NET Framework
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+  1>Checking Build System
+  Building Custom Rule E:/Github/AudioCodecs/libgsf/CMakeLists.txt
+  gsf.cpp
+  version.c
+  memory.c
+  vfs-w32.c
+  vfs-mem.c
+  vfs-fifo.c
+  vfs-fd.c
+  ini.c
+  blip_buf.c
+  Generating Code...
+  libgsf.vcxproj -> E:\Github\AudioCodecs\libgsf\build\Release\gsf.lib
+  Building Custom Rule E:/Github/AudioCodecs/libgsf/CMakeLists.txt
+  example.c
+E:\Github\AudioCodecs\libgsf\src\example.c(30,9): warning C4473: 'printf' : not enough arguments passed for format stri
+ng [E:\Github\AudioCodecs\libgsf\build\example.vcxproj]
+E:\Github\AudioCodecs\libgsf\src\example.c(30,9): message : placeholders and their parameters expect 11 variadic argume
+nts, but 10 were provided [E:\Github\AudioCodecs\libgsf\build\example.vcxproj]
+E:\Github\AudioCodecs\libgsf\src\example.c(30,9): message : the missing variadic argument 11 is required by format stri
+ng '%d' [E:\Github\AudioCodecs\libgsf\build\example.vcxproj]
+example.obj : error LNK2019: unresolved external symbol __imp__gsf_new referenced in function _main [E:\Github\AudioCod
+ecs\libgsf\build\example.vcxproj]
+example.obj : error LNK2019: unresolved external symbol __imp__gsf_delete referenced in function _main [E:\Github\Audio
+Codecs\libgsf\build\example.vcxproj]
+example.obj : error LNK2019: unresolved external symbol __imp__gsf_load_file referenced in function _main [E:\Github\Au
+dioCodecs\libgsf\build\example.vcxproj]
+example.obj : error LNK2019: unresolved external symbol __imp__gsf_play referenced in function _main [E:\Github\AudioCo
+decs\libgsf\build\example.vcxproj]
+example.obj : error LNK2019: unresolved external symbol __imp__gsf_ended referenced in function _main [E:\Github\AudioC
+odecs\libgsf\build\example.vcxproj]
+example.obj : error LNK2019: unresolved external symbol __imp__gsf_get_tags referenced in function _main [E:\Github\Aud
+ioCodecs\libgsf\build\example.vcxproj]
+example.obj : error LNK2019: unresolved external symbol __imp__gsf_free_tags referenced in function _main [E:\Github\Au
+dioCodecs\libgsf\build\example.vcxproj]
+example.obj : error LNK2019: unresolved external symbol __imp__gsf_tell referenced in function _main [E:\Github\AudioCo
+decs\libgsf\build\example.vcxproj]
+example.obj : error LNK2019: unresolved external symbol __imp__gsf_tell_samples referenced in function _main [E:\Github
+\AudioCodecs\libgsf\build\example.vcxproj]
+E:\Github\AudioCodecs\libgsf\build\Release\example.exe : fatal error LNK1120: 9 unresolved externals [E:\Github\AudioCo
+decs\libgsf\build\example.vcxproj]
+  Building Custom Rule E:/Github/AudioCodecs/libgsf/CMakeLists.txt
+  example_sdl.c
+example_sdl.obj : error LNK2019: unresolved external symbol __imp__gsf_new referenced in function _SDL_main [E:\Github\
+AudioCodecs\libgsf\build\example_sdl.vcxproj]
+example_sdl.obj : error LNK2019: unresolved external symbol __imp__gsf_delete referenced in function _SDL_main [E:\Gith
+ub\AudioCodecs\libgsf\build\example_sdl.vcxproj]
+example_sdl.obj : error LNK2019: unresolved external symbol __imp__gsf_load_file referenced in function _SDL_main [E:\G
+ithub\AudioCodecs\libgsf\build\example_sdl.vcxproj]
+example_sdl.obj : error LNK2019: unresolved external symbol __imp__gsf_play referenced in function _sdl_callback [E:\Gi
+thub\AudioCodecs\libgsf\build\example_sdl.vcxproj]
+example_sdl.obj : error LNK2019: unresolved external symbol __imp__gsf_ended referenced in function _sdl_callback [E:\G
+ithub\AudioCodecs\libgsf\build\example_sdl.vcxproj]
+example_sdl.obj : error LNK2019: unresolved external symbol __imp__gsf_get_tags referenced in function _SDL_main [E:\Gi
+thub\AudioCodecs\libgsf\build\example_sdl.vcxproj]
+example_sdl.obj : error LNK2019: unresolved external symbol __imp__gsf_free_tags referenced in function _SDL_main [E:\G
+ithub\AudioCodecs\libgsf\build\example_sdl.vcxproj]
+example_sdl.obj : error LNK2019: unresolved external symbol __imp__gsf_length referenced in function _SDL_main [E:\Gith
+ub\AudioCodecs\libgsf\build\example_sdl.vcxproj]
+example_sdl.obj : error LNK2019: unresolved external symbol __imp__gsf_tell referenced in function _sdl_callback [E:\Gi
+thub\AudioCodecs\libgsf\build\example_sdl.vcxproj]
+example_sdl.obj : error LNK2019: unresolved external symbol __imp__gsf_tell_samples referenced in function _sdl_callbac
+k [E:\Github\AudioCodecs\libgsf\build\example_sdl.vcxproj]
+example_sdl.obj : error LNK2019: unresolved external symbol __imp__gsf_seek referenced in function _SDL_main [E:\Github
+\AudioCodecs\libgsf\build\example_sdl.vcxproj]
+E:\Github\AudioCodecs\libgsf\build\Release\example_sdl.exe : fatal error LNK1120: 11 unresolved externals [E:\Github\Au
+dioCodecs\libgsf\build\example_sdl.vcxproj]
+
+E:\Github\AudioCodecs\libgsf\build>
